@@ -24,6 +24,14 @@ class Forest:
 		gridNumY = 0
 		tubeNum = 0 #Number of tubes and nodes
 		nodeNum = 0
+		
+	def generateBaseNodes():
+		pass
+		
+	def loadConfig(filename):
+		pass
+		
+	
 
 	
 	
