@@ -1,17 +1,17 @@
 from numpy import array
 class Tube:
     """A model carbon nanotube"""
-	def __init__():
-		baseNode = None
-		tipNode = None
-		growthVel = 0
-		radius = 0
-		nodeNum = 0
-		springK = array([0,0,0])
-		springLength = array([0,0,0])
-		springDamp = array([0,0,0])
-		maxStrain = 0
-		stictionDist = 0
+	def __init__(self):
+		self.baseNode = None
+		self.tipNode = None
+		self.growthVel = 0
+		self.radius = 0
+		self.nodeNum = 0
+		self.springK = array([0,0,0])
+		self.springLength = array([0,0,0])
+		self.springDamp = array([0,0,0])
+		self.maxStrain = 0
+		self.stictionDist = 0
 		
 	
 	
