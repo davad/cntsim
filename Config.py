@@ -5,6 +5,9 @@ Parses a config file
 Checks if a config file exists.  If it does, it loads the contents into
 a dictionary accesible by the simulator.  If it doesn't, the dictionary
 is populated by default values, which are written to a new config file.
+
+@TODO
+Set actual default settings
 '''
 
 import json
