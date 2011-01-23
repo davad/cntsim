@@ -1,4 +1,49 @@
 {
-  "key": "value", 
-  "springConstant": 10
+  "BIN": {
+    "MAX_X": 100, 
+    "MAX_Y": 100, 
+    "MAX_Z": 100
+  }, 
+  "FOREST": {
+    "DIMENSIONS": {
+      "MAX_X": 1000, 
+      "MAX_Y": 1000, 
+      "MAX_Z": 1000
+    }, 
+    "SURFACE_DENSITY": 0.02
+  }, 
+  "NODE": {
+    "MAX_RADIUS": 6.0, 
+    "MEAN_RADIUS": 4.0, 
+    "MIN_RADIUS": 2.0, 
+    "NODE_MASS": 1.0, 
+    "SIGMA_RADIUS": 0.45000000000000001
+  }, 
+  "SIMULATION": {
+    "ATTRACT_RADIUS": 3, 
+    "GRAVITY": 0.10000000000000001, 
+    "GROWTH_SPEED": 10.199999999999999, 
+    "MIN_DIST": 0.001, 
+    "TIME_STEP": 0.01
+  }, 
+  "SPRINGS": {
+    "ANGLES": {
+      "MAX_PHI": 1.5707963267948966, 
+      "MAX_THETA": 6.2831853071795862, 
+      "MEAN_PHI": 0.78539816339744828, 
+      "SIGMA_PHI": 0.1411935
+    }, 
+    "CONSTANTS": {
+      "EDGE": 100, 
+      "TORSION": 100
+    }, 
+    "DAMPING": {
+      "LINEAR": 10.0, 
+      "TORSION": 10.0
+    }
+  }, 
+  "TUBE": {
+    "SEGMENT_LENGTH": 8.0, 
+    "SEGMENT_NUM": 50
+  }, 
 }
