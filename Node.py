@@ -2,8 +2,8 @@ from numpy import array
 class Node:
 	"""A node representing one element of a model carbon nanotube"""
 	def __init__(self, pos = array([0, 0, 0]), mass = 1, fixed = False):
-		self.prev = [None, None, None]
-		self.next = [None, None, None]
+		self.prev = [None, None]
+		self.next = [None, None]
 		self.pos = pos
 		self.vel = array([0, 0, 0])
 		self.force = array([0, 0, 0])

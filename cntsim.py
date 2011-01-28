@@ -3,11 +3,19 @@ Created on Jan 17, 2010
 
 @author: sahar
 '''
+
+'''
+
+
+'''
 from Bin import Bin
 from Node import Node
 import math
 import numpy as np
 import xml.etree.ElementTree as ET
+import Config
+
+settings = Config.read()
 
 meanRad = 4 # Dimensional units in nm
 minRad = meanRad/2.0
@@ -23,6 +31,15 @@ ANGULAR_SIGMA = 0.282387/2
 THETA_MIN = 0
 THETA_MAX = 2*np.pi
 NODE_MASS = 10
+SEGMENT_LENGTH = 8
+TIME_STEP = .1
+GROWTH_SPEED = 1
+MAX_SEGMENTS = 20 #Defines the end condition
+segmentNum = 0
+TORSION_K = 1
+TORSION_DAMP = 1
+LINEAR_K = 1
+LINEAR_DAMP = 1
 
 nGrid = int(np.floor(bBoxLength/(maxRad*3))) #number of cells per side of grid
 sGrid = float(bBoxWidth)/nGrid #size of grid cells
@@ -62,7 +79,7 @@ for bx in range(nGrid):
 
 
 nodeNum = int(np.ceil(bBoxArea*pDensity/(np.pi*meanRad**2)))
-baseList = []
+tubeList = []
 for i in range(nodeNum):
 	added = False
 	while not added:
@@ -71,15 +88,40 @@ for i in range(nodeNum):
 		tz = 0
 		if(binList[tx][ty][tz].nodeList == []):
 			binList[tx][ty][tz].nodeList.append(Node(binList[tx][ty][tz].dimList + [.5*sGrid,.5*sGrid,meanRad], NODE_MASS, True))
-			baseList.append(binList[tx][ty][tz].nodeList[0])
+			tTube = Tube()
+			tTube.baseNode = binList[tx][ty][tz].nodeList[0]
+			tTube.tipNode = tTube.baseNode
+			tTube.radius = meanRad
+			tTube.nodeNum = 1
+			tTube.growthVel = GROWTH_SPEED
+			tTube.springK = np.array([LINEAR_K,TORSION_K])
+			tTube.springDamp = np.array([])
+			tubeList.append(tTube)
 			added = True
 
 for baseNode in baseList:
 	phi = np.random.normal(ANGULAR_MEAN, ANGULAR_SIGMA)
 	theta = np.random.rand()*THETA_MAX
-	newNode = Node(baseNode.pos + .001 * np.array([np.sin(phi)*np.cos(theta), np.sin(phi)*np.sin(theta), np.cos(phi)]), NODE_MASS)
+	newNode = Node(baseNode.pos + SEGMENT_LENGTH * np.array([np.sin(phi)*np.cos(theta), np.sin(phi)*np.sin(theta), np.cos(phi)]), NODE_MASS)
 	baseNode.next[0] = newNode
 	newNode.prev[0] = baseNode
+	phi = np.random.normal(ANGULAR_MEAN, ANGULAR_SIGMA)
+	theta = np.random.rand()*THETA_MAX
+	newNode = Node(baseNode.next[0].pos + SEGMENT_LENGTH * np.array([np.sin(phi)*np.cos(theta), np.sin(phi)*np.sin(theta), np.cos(phi)]), NODE_MASS)
+	baseNode.next[1] = newNode
+	baseNode.next[0].next[0] = newNode
+	newNode.prev[0] = baseNode.next[0]
+	newNode.prev[1] = baseNode
+	
+segmentNum = segmentNum + 2	
+
+running = False
+while running:
+	if segmentNum > MAX_SEGMENTS:
+		running = False
+	
+	
+
 	
 
 
