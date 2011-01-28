@@ -10,6 +10,7 @@ Created on Jan 17, 2010
 '''
 from Bin import Bin
 from Node import Node
+from Tube import Tube
 import math
 import numpy as np
 import xml.etree.ElementTree as ET
@@ -99,19 +100,19 @@ for i in range(nodeNum):
 			tubeList.append(tTube)
 			added = True
 
-for baseNode in baseList:
+for tube in tubeList:
 	phi = np.random.normal(ANGULAR_MEAN, ANGULAR_SIGMA)
 	theta = np.random.rand()*THETA_MAX
-	newNode = Node(baseNode.pos + SEGMENT_LENGTH * np.array([np.sin(phi)*np.cos(theta), np.sin(phi)*np.sin(theta), np.cos(phi)]), NODE_MASS)
-	baseNode.next[0] = newNode
-	newNode.prev[0] = baseNode
+	newNode = Node(tube.baseNode.pos + SEGMENT_LENGTH * np.array([np.sin(phi)*np.cos(theta), np.sin(phi)*np.sin(theta), np.cos(phi)]), NODE_MASS)
+	tube.baseNode.next[0] = newNode
+	newNode.prev[0] = tube.baseNode
 	phi = np.random.normal(ANGULAR_MEAN, ANGULAR_SIGMA)
 	theta = np.random.rand()*THETA_MAX
-	newNode = Node(baseNode.next[0].pos + SEGMENT_LENGTH * np.array([np.sin(phi)*np.cos(theta), np.sin(phi)*np.sin(theta), np.cos(phi)]), NODE_MASS)
-	baseNode.next[1] = newNode
-	baseNode.next[0].next[0] = newNode
-	newNode.prev[0] = baseNode.next[0]
-	newNode.prev[1] = baseNode
+	newNode = Node(tube.baseNode.next[0].pos + SEGMENT_LENGTH * np.array([np.sin(phi)*np.cos(theta), np.sin(phi)*np.sin(theta), np.cos(phi)]), NODE_MASS)
+	tube.baseNode.next[1] = newNode
+	tube.baseNode.next[0].next[0] = newNode
+	newNode.prev[0] = tube.baseNode.next[0]
+	newNode.prev[1] = tube.baseNode
 	
 segmentNum = segmentNum + 2	
 

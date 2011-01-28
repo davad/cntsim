@@ -1,6 +1,6 @@
 from numpy import array
 class Tube:
-    """A model carbon nanotube"""
+	"""A model carbon nanotube"""
 	def __init__(self):
 		self.baseNode = None
 		self.tipNode = None

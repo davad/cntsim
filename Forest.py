@@ -24,6 +24,7 @@ class Forest:
 		self.gridNumY = 0
 		self.tubeNum = 0 #Number of tubes and nodes
 		self.nodeNum = 0
+		self.binList = 0
 		
 	def generateBaseNodes():
 		pass
