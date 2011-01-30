@@ -39,17 +39,20 @@ def iterable(event=None):
   xlist = []
   zlist = []
   for i in range(0,50):
-    xlist.append(random.randint(0,1000))
-    zlist.append(random.randint(0,1000))
+    xlist.append(float(random.randint(0,1000)))
+    zlist.append(float(random.randint(0,1000)))
 
   xlist = sorted(xlist)
   zlist = sorted(zlist)
 
   wires = []
   for i in range(0,50):   
-    circle = gp_Circ(gp_Ax2(gp_Pnt(xlist[0], 0, zlist[0]), gp_Dir(0.,0.,1.)), 40.)
+    circle = gp_Circ(gp_Ax2(gp_Pnt(xlist[i], 0, zlist[i]), gp_Dir(0.,0.,1.)), 40.)
     wire = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(circle).Edge()).Wire()
+    wires.append(wire)
 
+  print len(wires)
+  print wires
   generator = BRepOffsetAPI_ThruSections(True, False)
   map(generator.AddWire, wires)
   generator.Build()
