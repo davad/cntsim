@@ -3,11 +3,6 @@ Created on Jan 17, 2010
 
 @author: sahar
 '''
-
-'''
-
-
-'''
 from Bin import Bin
 from Node import Node
 from Tube import Tube
@@ -18,20 +13,19 @@ import Config
 
 settings = Config.read()
 
-meanRad = 4 # Dimensional units in nm
-minRad = meanRad/2.0
-maxRad = meanRad*1.5
-sigmaRad = .45 
-bBoxWidth = 300
-bBoxLength = 300
-pDensity = .05 #Unitless fraction covered by particles
-bBoxArea = bBoxLength*bBoxWidth
+meanRad = settings['NODE']['MIN_RADIUS'] # Dimensional units in nm
+minRad = settings['NODE']['MEAN_RADIUS']
+maxRad = settings['NODE']['MAX_RADIUS']
+sigmaRad = settings['NODE']['SIGMA_RADIUS']
+bBoxDims = np.array([settings['FOREST']['DIMENSIONS']['MAX_X'],settings['FOREST']['DIMENSIONS']['MAX_Y'],settings['FOREST']['DIMENSIONS']['MAX_Z']])
+pDensity = settings['FOREST']['SURFACE_DENSITY'] #Unitless fraction covered by particles
+bBoxArea = bBoxDims[0]*bBoxDims[1]
 areaC = 0
-ANGULAR_MEAN = np.pi/4.0
-ANGULAR_SIGMA = 0.282387/2
-THETA_MIN = 0
-THETA_MAX = 2*np.pi
-NODE_MASS = 10
+ANGULAR_MEAN = settings['SPRINGS']['ANGLES']['MEAN_PHI']
+ANGULAR_SIGMA = settings['SPRINGS']['ANGLES']['SIGMA_PHI']
+THETA_MIN = settings['SPRINGS']['ANGLES']['MIN_THETA']
+THETA_MAX = settings['SPRINGS']['ANGLES']['MAX_THETA']
+NODE_MASS = settings['NODE']['MASS']
 SEGMENT_LENGTH = 8
 TIME_STEP = .1
 GROWTH_SPEED = 1
@@ -42,8 +36,8 @@ TORSION_DAMP = 1
 LINEAR_K = 1
 LINEAR_DAMP = 1
 
-nGrid = int(np.floor(bBoxLength/(maxRad*3))) #number of cells per side of grid
-sGrid = float(bBoxWidth)/nGrid #size of grid cells
+nGrid = int(np.floor(bBoxDims[0]/(maxRad*3))) #number of cells per side of grid
+sGrid = float(bBoxDims[0])/nGrid #size of grid cells
 
 binList = np.empty([nGrid,nGrid,nGrid],dtype = np.object_)
 for bx in range(nGrid):
