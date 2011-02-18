@@ -8,7 +8,8 @@ class Tube:
 		self.radius = 0
 		self.nodeNum = 0
 		self.springK = array([0,0])
-		self.springLength = 0
+		self.restLengthLinear = 0
+		self.restLengthTorsion = 0
 		self.springDamp = array([0,0])
 		self.maxStrain = 0
 		self.stictionDist = 0

@@ -1,0 +1,16 @@
+CNT growth simulation steps:
+
+for tube in tubeList:
+	if baseNode.restLength[2] < tube.restLengthLinear:
+		lengthen spring
+	
+applyForces()
+-Van Der Waals Force (Lennard-Jones Potential ?)
+-Gravity
+-Drag
+-Spring Forces
+
+integrateForces()
+Euler/Runge-Kutta Method
+
+resolveCollisions()
