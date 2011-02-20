@@ -53,7 +53,8 @@ def common(event=None):
     # Common surface
     CommonSurface = BRepAlgoAPI_Common(Box,Wedge).Shape()
     gthing = GProp_GProps()
-    print BRepGProp_VolumePropertiesGK(CommonSurface, gthing)
+    print BRepGProp_VolumeProperties(CommonSurface, gthing, .0001)
+    print gthing.Mass()
 
     display.EraseAll()
     ais_box = display.DisplayShape(Box)

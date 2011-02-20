@@ -1,11 +1,16 @@
-from OCC.gp import *
+from OCC.gp import gp
+from OCC.gp import gp_Pnt
+from OCC.gp import gp_Circ
+from OCC.gp import gp_Ax2
+from OCC.gp import gp_Ax3
+from OCC.gp import gp_Dir
+from OCC.gp import gp_Pln
 from OCC.BRepBuilderAPI import *
 from OCC.GeomAPI import *
 from OCC.Geom import *
 from OCC.GeomAbs import *
 from OCC.TColgp import *
 from OCC.Geom2d import *
-from OCC.gp import *
 from OCC.BRepBuilderAPI import *
 from OCC.TColgp import *
 from OCC.BRepOffsetAPI import *
@@ -48,7 +53,7 @@ def pipe(event=None):
   #ais3 = AIS_Shape(Wc)
   #self.interactive_context.Display(ais3,1)
    
-  F = BRepBuilderAPI_MakeFace(gp_Pln(gp_Ax3(gp().ZOX())),Wc,1).Face()
+  F = BRepBuilderAPI_MakeFace(gp_Pln(gp_Ax3(gp.gp().ZOX())),Wc,1).Face()
   MKPipe = BRepOffsetAPI_MakePipe(W,F)
   MKPipe.Build()
   display.DisplayShape(MKPipe.Shape())
