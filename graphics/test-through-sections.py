@@ -37,22 +37,19 @@ def iterable(event=None):
 #  c4b= gp_Circ(gp_Ax2(gp_Pnt(200.,0.,200.),gp_Dir(0.,0.,1.)),40.)
 #  W4b = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(c4b).Edge()).Wire()
   xlist = []
-  zlist = []
-  for i in range(0,100):
+  for i in range(0,10000):
     xlist.append(float(random.randint(0,1000)))
-    zlist.append(float(random.randint(0,1000)))
 
   xlist = sorted(xlist)
-  zlist = sorted(zlist)
 
   wiresA = []
   wiresB = []
-  for i in range(0,100):
-    circle = gp_Circ(gp_Ax2(gp_Pnt(xlist[i], 0, zlist[i]), gp_Dir(0.,0.,1.)), 40.)
+  for i in range(0,10000):
+    circle = gp_Circ(gp_Ax2(gp_Pnt(xlist[i], 0, 0), gp_Dir(1.,0.,0.)), 40.)
     wire = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(circle).Edge()).Wire()
     wiresA.append(wire)
     
-    circle = gp_Circ(gp_Ax2(gp_Pnt(xlist[i]+200, 0, zlist[i]+200), gp_Dir(0.,0.,1.)), 40.)
+    circle = gp_Circ(gp_Ax2(gp_Pnt(xlist[i], 0, 200), gp_Dir(1.,0.,0.)), 40.)
     wire = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(circle).Edge()).Wire()
     wiresB.append(wire)
 
