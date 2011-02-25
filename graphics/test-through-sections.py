@@ -36,31 +36,31 @@ def iterable(event=None):
 #
 #  c4b= gp_Circ(gp_Ax2(gp_Pnt(200.,0.,200.),gp_Dir(0.,0.,1.)),40.)
 #  W4b = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(c4b).Edge()).Wire()
+  number_of_points = 1000;
+  number_of_tubes = 20;
   xlist = []
-  for i in range(0,10000):
-    xlist.append(float(random.randint(0,1000)))
+  for i in range(0,number_of_points):
+    xlist.append(float(random.randint(0,number_of_points)))
 
   xlist = sorted(xlist)
+  
+  for i in range(0,number_of_tubes):
+    wires = []
+    y = z = 0
+    if(i % 2 == 0):
+      y = 50*i
+    else:
+      z = 50*(i-1)
 
-  wiresA = []
-  wiresB = []
-  for i in range(0,10000):
-    circle = gp_Circ(gp_Ax2(gp_Pnt(xlist[i], 0, 0), gp_Dir(1.,0.,0.)), 40.)
-    wire = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(circle).Edge()).Wire()
-    wiresA.append(wire)
+    for j in range(0,number_of_points):
+      circle = gp_Circ(gp_Ax2(gp_Pnt(xlist[j], y, z), gp_Dir(1.,0.,0.)), 40.)
+      wire = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(circle).Edge()).Wire()
+      wires.append(wire)
     
-    circle = gp_Circ(gp_Ax2(gp_Pnt(xlist[i], 0, 200), gp_Dir(1.,0.,0.)), 40.)
-    wire = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(circle).Edge()).Wire()
-    wiresB.append(wire)
-
-  generatorA = BRepOffsetAPI_ThruSections(True, False)
-  generatorB = BRepOffsetAPI_ThruSections(True, False)
-  map(generatorA.AddWire, wiresA)
-  map(generatorB.AddWire, wiresB)
-  generatorA.Build()
-  generatorB.Build()
-  display.DisplayShape(generatorA.Shape())
-  display.DisplayShape(generatorB.Shape())
+    generator = BRepOffsetAPI_ThruSections(True, False)
+    map(generator.AddWire, wires)
+    generator.Build()
+    display.DisplayShape(generator.Shape())
 
 add_menu('Testing')
 add_function_to_menu('Testing', iterable)
