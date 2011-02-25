@@ -38,25 +38,32 @@ def iterable(event=None):
 #  W4b = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(c4b).Edge()).Wire()
   xlist = []
   zlist = []
-  for i in range(0,50):
+  for i in range(0,100):
     xlist.append(float(random.randint(0,1000)))
     zlist.append(float(random.randint(0,1000)))
 
   xlist = sorted(xlist)
   zlist = sorted(zlist)
 
-  wires = []
-  for i in range(0,50):   
+  wiresA = []
+  wiresB = []
+  for i in range(0,100):
     circle = gp_Circ(gp_Ax2(gp_Pnt(xlist[i], 0, zlist[i]), gp_Dir(0.,0.,1.)), 40.)
     wire = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(circle).Edge()).Wire()
-    wires.append(wire)
+    wiresA.append(wire)
+    
+    circle = gp_Circ(gp_Ax2(gp_Pnt(xlist[i]+200, 0, zlist[i]+200), gp_Dir(0.,0.,1.)), 40.)
+    wire = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(circle).Edge()).Wire()
+    wiresB.append(wire)
 
-  print len(wires)
-  print wires
-  generator = BRepOffsetAPI_ThruSections(True, False)
-  map(generator.AddWire, wires)
-  generator.Build()
-  display.DisplayShape(generator.Shape())
+  generatorA = BRepOffsetAPI_ThruSections(True, False)
+  generatorB = BRepOffsetAPI_ThruSections(True, False)
+  map(generatorA.AddWire, wiresA)
+  map(generatorB.AddWire, wiresB)
+  generatorA.Build()
+  generatorB.Build()
+  display.DisplayShape(generatorA.Shape())
+  display.DisplayShape(generatorB.Shape())
 
 add_menu('Testing')
 add_function_to_menu('Testing', iterable)
