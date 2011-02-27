@@ -17,7 +17,7 @@ from OCC.BRep import *
 from OCC.Precision import *
 from OCC.BRepLib import *
 
-import math, sys, random
+import math, sys, random, json
 
 from OCC.Display.SimpleGui import *
 display, start_display, add_menu, add_function_to_menu = init_display()
@@ -36,30 +36,31 @@ def iterable(event=None):
 #
 #  c4b= gp_Circ(gp_Ax2(gp_Pnt(200.,0.,200.),gp_Dir(0.,0.,1.)),40.)
 #  W4b = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(c4b).Edge()).Wire()
-  number_of_points = 1000;
-  number_of_tubes = 20;
-  xlist = []
-  for i in range(0,number_of_points):
-    xlist.append(float(random.randint(0,number_of_points)))
-
-  xlist = sorted(xlist)
+  forest = []
+  try:
+    fp = open('test_forest.json', 'r')
+    forest = json.load(fp)
+    fp.close()
+  except IOError:
+    print "No json file found"
   
-  for i in range(0,number_of_tubes):
+  print "Simulating " + str(len(forest)) + " tubes"
+  for tube in forest:
+    if(len(tube) < 2):
+      continue
     wires = []
-    y = z = 0
-    if(i % 2 == 0):
-      y = 50*i
-    else:
-      z = 50*(i-1)
-
-    for j in range(0,number_of_points):
-      circle = gp_Circ(gp_Ax2(gp_Pnt(xlist[j], y, z), gp_Dir(1.,0.,0.)), 40.)
+    for point in tube:
+      circle = gp_Circ(gp_Ax2(gp_Pnt(point[0], point[1], point[2]), gp_Dir(0.,0.,1.)), 8.)
       wire = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(circle).Edge()).Wire()
       wires.append(wire)
     
     generator = BRepOffsetAPI_ThruSections(True, False)
     map(generator.AddWire, wires)
-    generator.Build()
+    try:
+      generator.Build()
+    except:
+      print tube
+      continue
     display.DisplayShape(generator.Shape())
 
 add_menu('Testing')
