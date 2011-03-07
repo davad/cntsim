@@ -1,0 +1,11 @@
+Project Overview:
+
+Python implementation of Simplified Marching Cubes/Random walker chemical vapor infiltration algorithm.
+
+Classes:
+Walker
+smcGrid
+smcNode?
+
+Data Organization:
+Triangles formed from nodes are kept in a half-edge data structure
