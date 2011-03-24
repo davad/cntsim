@@ -26,28 +26,10 @@ nIter = 500;
 nGrid = int(np.floor(cellLength/(tubeRadius*3))) #number of cells per side of grid
 sGrid = float(cellLength)/nGrid #size of grid cells
 binList = np.empty([nGrid,nGrid],dtype = np.object_)
-
-class baseNode:
-	def __init__(self, pos = np.array([0,0,0]), edgePos = np.array([0,0,0]), radius = 0.0, edge = False):
-		self.pos = pos
-		self.edgePos = edgePos
-		self.radius = radius
-		self.edge = edge
-		
-
+	
 def overCheck(testV):
-	tI = int(np.floor(testV[xInd]/sGrid))
-	tJ = int(np.floor(testV[yInd]/sGrid))
-	if tI < 0:
-		tI = 0
-	elif tI > nGrid-1:
-		tI = nGrid-1
-	if tJ < 0:
-		tJ = 0
-	elif tJ > nGrid-1:
-		tJ = nGrid-1
 	for node in tubeList:
-		if np.inner( testV[0:3]-node.pos[0:3],testV[0:3]-node.pos[0:3] ) < 4*(tubeRadius)**2:
+		if np.inner( testV[0:3]-node[0:3],testV[0:3]-node[0:3] ) < 4*(tubeRadius)**2:
 			return node
 	# for node in binList[tI][tJ].nodeList:
 		# if np.inner(testV[0:3]-node[0:3],testV[0:3]-node[0:3] ) < 4*(tubeRadius)**2:
@@ -57,7 +39,17 @@ def overCheck(testV):
 			# if np.inner(testV[0:3]-node[0:3],testV[0:3]-node[0:3] ) < 4*(tubeRadius)**2:
 				# return node
 	#return None
+	testV2 = np.zeros(4)
+	testV2[0:] = testV[0:]
+	for i in range(2):
+		if testV2[i] + tubeRadius > cellLength:
+			testV2[i] = testV2[i] - cellLength
+		elif testV2[i] - tubeRadius < 0:
+			testV2[i] = testV2[i] + cellLength
 
+	for node in tubeList:
+		if np.inner( testV2[0:3]-node[0:3],testV2[0:3]-node[0:3] ) < 4*(tubeRadius)**2:
+			return node
 
 for bx in range(nGrid):
 	for by in range(nGrid):
@@ -87,9 +79,9 @@ for j in range(tubeNy):
 		if nT == tubeNum:
 			break
 		else:
-			tNode = baseNode(np.array([i*tubeDx+tubeRadius,j*tubeDy+tubeRadius, 0]),np.array([i*tubeDx+tubeRadius,j*tubeDy+tubeRadius, 0]),tubeRadius)
-			tI = int(np.floor(tNode.pos[xInd]/sGrid))
-			tJ = int(np.floor(tNode.pos[yInd]/sGrid))
+			tNode = np.array([i*tubeDx+tubeRadius,j*tubeDy+tubeRadius, 0, tubeRadius])
+			tI = int(np.floor(tNode[xInd]/sGrid))
+			tJ = int(np.floor(tNode[yInd]/sGrid))
 			tubeList.append(tNode)
 			binList[tI][tJ].nodeList.append(tNode)
 			nT = nT + 1
@@ -107,39 +99,84 @@ for j in range(tubeNy):
 			
 for i in range(nIter):
 	for n in tubeList:
-		tv = np.zeros(3)
-		tv[0:] = n.pos[0:]
+		tv = np.zeros(4)
+		tv[0:] = n[0:]
 		tv[0:2] = tv[0:2] + random.uniform(-tubeDy,tubeDy,[1,2])
-		overV = overCheck(tv)
 		for i in range(2):
 			if tv[i] > cellLength:
 				tv[i] = tv[i] - cellLength
 			elif tv[i] < 0:
 				tv[i] = tv[i] + cellLength
-		#print tv
+		overV = overCheck(tv)
 		if overV is None:
-			overV = overCheck(tv)
-		if overV is None:
-			pI = int(np.floor(n.pos[xInd]/sGrid))
-			pJ = int(np.floor(n.pos[xInd]/sGrid))
+			pI = int(np.floor(n[xInd]/sGrid))
+			pJ = int(np.floor(n[xInd]/sGrid))
 			nI = int(np.floor(tv[xInd]/sGrid))
 			nJ = int(np.floor(tv[xInd]/sGrid))
 			if pI != nI or pJ != nJ:
-				nList = binList[int(np.floor(n.pos[xInd]/sGrid))][int(np.floor(n.pos[yInd]/sGrid))].nodeList
+				nList = binList[int(np.floor(n[xInd]/sGrid))][int(np.floor(n[yInd]/sGrid))].nodeList
 				for i in range(len(nList)) :
-					if (nList[i] == n.pos).all():
+					if (nList[i] == n).all():
 						nList.pop(i)
 						break
-				n.pos[0:] = tv[0:]
-				binList[int(np.floor(n.pos[xInd]/sGrid))][int(np.floor(n.pos[yInd]/sGrid))].nodeList.append(n.pos)
+				n[0:] = tv[0:]
+				binList[int(np.floor(n[xInd]/sGrid))][int(np.floor(n[yInd]/sGrid))].nodeList.append(n)
 			else:
-				n.pos[0:] = tv[0:]
+				n[0:] = tv[0:]
 			
+
+edgeList = []
+for n in tubeList:
+	edgeX = False
+	edgeY = False
+	tv1 = np.zeros(4)
+	tv1[0:] = n[0:]
+	tList = []
+	if n[xInd] + tubeRadius > cellLength:
+		edgeX = True
+		tv2 = np.zeros(4)
+		tv2[0:] = n[0:]
+		tv2[xInd] = tv2[xInd] - cellLength
+		tv1[xInd] = tv1[xInd] - cellLength
+		tList.append(tv2)
+	elif n[xInd] - tubeRadius < 0:
+		edgeX = True
+		tv3 = np.zeros(4)
+		tv3[0:] = n[0:]
+		tv3[xInd] = tv3[xInd] + cellLength
+		tv1[xInd] = tv1[xInd] + cellLength
+		tList.append(tv3)
+	if n[yInd] + tubeRadius > cellLength:
+		edgeY = True
+		tv4 = np.zeros(4)
+		tv4[0:] = n[0:]
+		tv4[yInd] = tv4[yInd] - cellLength
+		tv1[yInd] = tv1[yInd] - cellLength
+		tList.append(tv4)
+	elif n[yInd] - tubeRadius < 0:
+		edgeY = True
+		tv5 = np.zeros(4)
+		tv5[0:] = n[0:]
+		tv5[yInd] = tv5[yInd] + cellLength
+		tv1[yInd] = tv1[yInd] + cellLength
+		tList.append(tv5)
+
+	if edgeX and edgeY:
+		tList.append(tv1)
+		edgeList.extend(tList)
+		print "corner!"
+	elif edgeX or edgeY:
+		edgeList.extend(tList)
+
+tubeList.extend(edgeList)
+
+tubeNum = tubeNum + len(edgeList)
+		
 			
 CNT_Forest = ET.Element("CNTForest", xmax = str(cellLength), ymax = str(cellLength), zmax = str(0), tubenum = str(tubeNum), nodenum = str(tubeNum), rmax = str(tubeRadius), rmin = str(tubeRadius))
 for n in tubeList:
-    tempE = ET.Element("T", r = str(n.radius))
-    tempN = ET.Element("N", x = str(n.pos[0]), y = str(n.pos[1]), z = str(n.pos[2]))
+    tempE = ET.Element("T", r = str(n[3]))
+    tempN = ET.Element("N", x = str(n[0]), y = str(n[1]), z = str(n[2]))
     tempE.append(tempN)
     CNT_Forest.append(tempE)
     
