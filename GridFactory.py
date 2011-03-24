@@ -47,7 +47,7 @@ def overCheck(testV):
 	elif tJ > nGrid-1:
 		tJ = nGrid-1
 	for node in tubeList:
-		if np.inner( testV[0:3]-node[0:3],testV[0:3]-node[0:3] ) < 4*(tubeRadius)**2:
+		if np.inner( testV[0:3]-node.pos[0:3],testV[0:3]-node.pos[0:3] ) < 4*(tubeRadius)**2:
 			return node
 	# for node in binList[tI][tJ].nodeList:
 		# if np.inner(testV[0:3]-node[0:3],testV[0:3]-node[0:3] ) < 4*(tubeRadius)**2:
@@ -80,13 +80,6 @@ for bx in range(nGrid):
 		else: yn = by+1
 		#Clockwise order starting from top
 		binList[bx][by].neighborList.extend( [binList[bx][yn],binList[xn][yn],binList[xn][by],binList[xn][yp],binList[bx][yp],binList[xp][yp],binList[xp][by],binList[xp][yn]])
-
-
-field = [None]*nGrid
-
-for i in range(nGrid):
-    field[i] = [None]*nGrid
-	
 	
 nT = 0
 for j in range(tubeNy):
@@ -94,11 +87,11 @@ for j in range(tubeNy):
 		if nT == tubeNum:
 			break
 		else:
-			tTube = np.array([i*tubeDx+tubeRadius,j*tubeDy+tubeRadius, 0, tubeRadius])
-			tI = int(np.floor(tTube[xInd]/sGrid))
-			tJ = int(np.floor(tTube[yInd]/sGrid))
-			tubeList.append(tTube)
-			binList[tI][tJ].nodeList.append(tTube)
+			tNode = baseNode(np.array([i*tubeDx+tubeRadius,j*tubeDy+tubeRadius, 0]),np.array([i*tubeDx+tubeRadius,j*tubeDy+tubeRadius, 0]),tubeRadius)
+			tI = int(np.floor(tNode.pos[xInd]/sGrid))
+			tJ = int(np.floor(tNode.pos[yInd]/sGrid))
+			tubeList.append(tNode)
+			binList[tI][tJ].nodeList.append(tNode)
 			nT = nT + 1
 			
 # for j in range(tubeNy):
@@ -113,40 +106,40 @@ for j in range(tubeNy):
 			# nT = nT + 1
 			
 for i in range(nIter):
-	for v in tubeList:
-		tv = np.zeros(4)
-		tv[0:] = v[0:]
+	for n in tubeList:
+		tv = np.zeros(3)
+		tv[0:] = n.pos[0:]
 		tv[0:2] = tv[0:2] + random.uniform(-tubeDy,tubeDy,[1,2])
 		overV = overCheck(tv)
-		for n in range(2):
-			if tv[n] > cellLength:
-				tv[n] = tv[n] - cellLength
-			elif tv[n] < 0:
-				tv[n] = tv[n] + cellLength
+		for i in range(2):
+			if tv[i] > cellLength:
+				tv[i] = tv[i] - cellLength
+			elif tv[i] < 0:
+				tv[i] = tv[i] + cellLength
 		#print tv
 		if overV is None:
 			overV = overCheck(tv)
 		if overV is None:
-			pI = int(np.floor(v[xInd]/sGrid))
-			pJ = int(np.floor(v[xInd]/sGrid))
+			pI = int(np.floor(n.pos[xInd]/sGrid))
+			pJ = int(np.floor(n.pos[xInd]/sGrid))
 			nI = int(np.floor(tv[xInd]/sGrid))
 			nJ = int(np.floor(tv[xInd]/sGrid))
 			if pI != nI or pJ != nJ:
-				nList = binList[int(np.floor(v[xInd]/sGrid))][int(np.floor(v[yInd]/sGrid))].nodeList
-				for n in range(len(nList)) :
-					if (nList[n] == v).all():
-						nList.pop(n)
+				nList = binList[int(np.floor(n.pos[xInd]/sGrid))][int(np.floor(n.pos[yInd]/sGrid))].nodeList
+				for i in range(len(nList)) :
+					if (nList[i] == n.pos).all():
+						nList.pop(i)
 						break
-				v[0:] = tv[0:]
-				binList[int(np.floor(v[xInd]/sGrid))][int(np.floor(v[yInd]/sGrid))].nodeList.append(v)
+				n.pos[0:] = tv[0:]
+				binList[int(np.floor(n.pos[xInd]/sGrid))][int(np.floor(n.pos[yInd]/sGrid))].nodeList.append(n.pos)
 			else:
-				v[0:] = tv[0:]
+				n.pos[0:] = tv[0:]
 			
 			
 CNT_Forest = ET.Element("CNTForest", xmax = str(cellLength), ymax = str(cellLength), zmax = str(0), tubenum = str(tubeNum), nodenum = str(tubeNum), rmax = str(tubeRadius), rmin = str(tubeRadius))
-for v in tubeList:
-    tempE = ET.Element("T", r = str(v[3]))
-    tempN = ET.Element("N", x = str(v[0]), y = str(v[1]), z = str(v[2]))
+for n in tubeList:
+    tempE = ET.Element("T", r = str(n.radius))
+    tempN = ET.Element("N", x = str(n.pos[0]), y = str(n.pos[1]), z = str(n.pos[2]))
     tempE.append(tempN)
     CNT_Forest.append(tempE)
     
